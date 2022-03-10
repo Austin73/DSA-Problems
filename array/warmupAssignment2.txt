@@ -1,0 +1,196 @@
+1 Richest Customer Wealth
+
+class Solution {
+    public int maximumWealth(int[][] accounts) {
+        int res= Integer.MIN_VALUE;
+          int m=accounts.length;
+            int n=accounts[0].length;
+            for(int i=0;i<m;i++)
+            {
+                    int currSum=0;
+                    for(int j=0;j<n;j++)
+                    {
+                            currSum+=accounts[i][j];
+                    }
+                    if(currSum > res)
+                            res=currSum;
+            }
+            return res;
+    }
+}
+
+2 Running Sum of 1d Array
+
+class Solution {
+    public int[] runningSum(int[] nums) {
+        int res[] = new int[nums.length];
+            res[0]=nums[0];
+            for(int i=1;i<nums.length;i++)
+            {
+                    res[i]=nums[i]+res[i-1];
+            }
+            return res;
+    }
+}
+
+3.Jewels and Stones
+
+class Solution {
+    public int numJewelsInStones(String jewels, String stones) {
+        
+            HashSet<Character> set= new HashSet<Character>();
+            for(char c : jewels.toCharArray())
+                  set.add(c);
+            int res=0;
+            for(char ch : stones.toCharArray())
+            {
+                    if(set.contains(ch))
+                           res++;
+            }
+            return res;
+    }
+}
+
+
+4.   Minimum Absolute Difference
+class Solution {
+    public List<List<Integer>> minimumAbsDifference(int[] arr) {
+        
+            Arrays.sort(arr);
+             List<List<Integer>> res= new ArrayList<>();
+            int minDiff = Integer.MAX_VALUE;
+            for(int i=1;i<arr.length;i++)
+            {
+                   int temp= arr[i]-arr[i-1];
+                    if(temp< minDiff)
+                    {
+                        minDiff= temp;
+                        res.clear();
+                        List<Integer> newList= new ArrayList<>();
+                            newList.add(arr[i-1]);
+                            newList.add(arr[i]);
+                            res.add(newList);
+                    }
+                    else if(temp == minDiff)
+                    {
+                          List<Integer> newList1= new ArrayList<>();  
+                          newList1.add(arr[i-1]);
+                          newList1.add(arr[i]);
+                          res.add(newList1); 
+                    }
+                    else
+                    {
+                            
+                    }
+            }
+            return res;
+    }
+}
+
+
+5. Three Consecutive Odds
+
+class Solution {
+    public boolean threeConsecutiveOdds(int[] arr) {
+        if(arr.length<=2)
+                return false;
+     for(int i=0;i<=arr.length-3;i++)
+     {
+        if(arr[i]%2!=0 && arr[i+1]%2!=0 && arr[i+2]%2!=0)
+                return true;
+     }
+            return false;
+    }
+}
+
+6. Transpose Matrix
+
+
+class Solution {
+    public int[][] transpose(int[][] matrix) {
+
+            
+            int m=matrix.length;
+            int n=matrix[0].length;
+           
+            int res[][]= new int[n][m];
+            if(m==0 || n==0)
+                    return res;
+            for(int i=0;i<m;i++)
+            {
+               for(int j=0;j<n;j++)
+               {
+                       res[j][i]=matrix[i][j];
+               }
+            }
+            return res;
+    }
+}
+
+
+7.  Majority Element
+
+class Solution {
+    public int majorityElement(int[] nums) {
+        if(nums.length==1)
+                return nums[0];
+         Arrays.sort(nums);
+         int count=1;
+         int pos=0;
+         for(int i=1;i<nums.length;i++)
+         {
+                 if(nums[i]==nums[i-1])
+                 {
+                         count+=1;
+                 if(count>(nums.length/2))
+                 {
+                     pos=i;
+                     break;
+                 }
+                    
+                 }
+                 else
+                         count=1;
+            
+         }
+           
+                    return nums[pos];
+    }
+}
+
+
+8.  Move Zeroes
+
+
+class Solution {
+    public void moveZeroes(int[] nums) {
+        
+            int i=0;
+            int j=0;
+            for(i=0;i<nums.length;i++)
+            {
+                    if(nums[i]!=0)
+                    {
+                        nums[j]=nums[i];
+                            if(i!=j)
+                            nums[i]=0;
+                            j++;
+                    }
+            }
+            
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
