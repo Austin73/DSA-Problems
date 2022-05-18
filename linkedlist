@@ -1,0 +1,91 @@
+Copy List with Random Pointer
+
+Approach 1
+TC
+O(n2)
+SC
+O(1)
+
+1. Create all the node as in the origial list 
+2. To assign random pointer ,
+     if OriginalNode .random ==null
+          copyNode.random=null
+     else
+          find the random pointer of the original list
+          Node temp =orignal.random
+          Node temp1=copy.random
+          traverse from start and find if this is random also keep traversing the copy list also 
+           while(temp!=original.random)
+             {
+               temp=temp.next;
+               temp1=temp1.next;
+             }
+          copy.random=temp1;
+
+
+Approach 2nd
+TC (O(n))
+Sc(O(n))
+
+1. create the copy listnode
+2. store it in hashmap  the number of the node and node address of both list
+example 
+ (0th ,originalNode)
+ (0th ,copyNode)
+ 
+ 
+approach 3rd
+1. // loop 1. copy all the nodes
+2. Assign random pointers
+3. restore the linked list back to initial
+
+
+
+    public Node copyRandomList(Node head) {
+       if(head == null)
+               return head;
+      Node curr=head;
+      Node newHead=null;
+      Node newTail=null;
+      while(curr!=null)
+      {
+        Node temp=new Node(curr.val);
+        temp.next=curr.next;
+        curr.next=temp;
+        temp.random=curr.random;
+        curr=curr.next.next;   
+      }
+    curr=head;
+    Node curr1=curr.next;
+    while(curr!=null)
+    {
+       if(curr.random==null)
+               curr1.random=null;
+       else
+       {
+          curr1.random=curr1.random.next;     
+       }
+    if(curr1.next==null)
+            break;
+     curr=curr.next.next;
+     curr1=curr1.next.next;
+    }
+    curr=head;
+    curr1=curr.next;
+newHead=curr1;
+      while(curr!=null)
+    {
+        
+       curr.next=curr1.next;
+       curr=curr.next;
+       if(curr==null)
+               break;
+       curr1.next=curr.next;
+    if(curr1.next==null)
+            break;
+    
+     curr1=curr1.next;
+    }
+    return newHead;
+    }
+}

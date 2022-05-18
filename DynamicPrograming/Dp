@@ -1,0 +1,751 @@
+0/1 Knap Sack problem
+
+Recursive DP
+ //Function to return max value that can be put in knapsack of capacity W.
+    static int res=0;
+    static int knapSack(int W, int wt[], int val[], int n) 
+    { 
+         // your code here 
+         int dp[][]=new int[n+1][W+1];
+         for(int i=0;i<=n;i++)
+         {
+            for(int j=0;j<=W;j++)
+             dp[i][j]=-1;
+         }
+         res= solve(W,wt,val,n,dp);
+         for(int i=0;i<=n;i++)
+         {
+            for(int j=0;j<=W;j++)
+             System.out.println(dp[i][j]);
+         }
+         return res;
+    } 
+    static int solve(int W,int wt[],int val[],int n,int dp[][])
+    {
+        if(W==0 || n==0)
+          return 0;
+       if(dp[n][W]!=-1)
+        return dp[n][W];
+       if(wt[n-1]<=W)
+       {
+           dp[n][W]= Math.max(val[n-1]+solve(W-wt[n-1],wt,val,n-1,dp),solve(W,wt,val,n-1,dp));
+       }
+      else if(wt[n-1]>W)
+      dp[n][W]=solve(W,wt,val,n-1,dp);
+      return dp[n][W];
+    }
+    
+2. Top Down Approach
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Subset Sum Problem
+
+static Boolean isSubsetSum(int N, int arr[], int sum){
+        // code here
+        return solve(N,arr,sum,0);
+    }
+    static Boolean solve(int N,int arr[],int sum,int curr_Sum)
+    {
+        if(sum==0)
+         return true;
+       if(N==0)
+        return false;
+      if(arr[N-1]<=sum)
+      {
+          if(solve(N-1,arr,sum-arr[N-1],curr_Sum+arr[N-1])==true)
+            return true;
+         if(solve(N-1,arr,sum,curr_Sum)==true)
+           return true;
+      }
+      else
+      {
+        if(solve(N-1,arr,sum,curr_Sum)==true)
+                   return true;
+      }
+}
+
+
+
+
+
+
+
+Approach 2nd 
+use top down dp approach 
+
+    static Boolean isSubsetSum(int N, int arr[], int sum){
+        // code here
+        boolean dp[][]= new boolean[N+1][sum+1];
+        for(int i=0;i<=N;i++)
+         dp[i][0]=true;
+        return solve(N,arr,sum,dp);
+        
+    }
+    static Boolean solve(int N,int arr[],int sum,boolean dp[][])
+    {
+      
+      for(int i=1;i<=N;i++)
+      {
+          for(int j=1;j<=sum;j++)
+          {
+            if(arr[i-1]<=j)
+            dp[i][j]=dp[i-1][j-arr[i-1]] || dp[i-1][j]; 
+            else
+             dp[i][j]=dp[i-1][j];
+          }
+      }
+      return dp[N][sum];
+    }
+}
+
+
+
+3.  Partition Equal Subset Sum
+
+
+Approach 1,
+use recursive approach
+
+
+Given a non-empty array nums containing only positive integers, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+
+ 
+
+Example 1:
+
+Input: nums = [1,5,11,5]
+Output: true
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+
+
+important observation 
+if sum of all elements in the array is even then only we can divide the whole array in two parts
+otherwise it can't be divided.
+
+then our target should be finding the sum/2 in the array
+
+ public boolean canPartition(int[] nums) {
+         int sum=0;
+            for(int num : nums)
+              sum+=num;
+        if(sum%2!=0)
+          return false;
+     
+       return solve(nums,nums.length,sum/2);     
+    }
+  public static boolean solve(int nums[],int n,int sum)
+  {
+
+     if(sum==0)
+           return true;
+     if(n==0)
+            return false;
+     if(nums[n-1]<=sum)
+     return solve(nums,n-1,sum-nums[n-1]) || solve(nums,n-1,sum);
+     else
+       return solve(nums,n-1,sum);
+  }
+}
+
+
+
+Approach 2
+
+   public boolean canPartition(int[] nums) {
+         int sum=0;
+            for(int num : nums)
+              sum+=num;
+        if(sum%2!=0)
+          return false;
+     
+       return solve(nums,nums.length,sum/2);     
+    }
+  public static boolean solve(int nums[],int n,int sum)
+  {
+
+   boolean dp[][]=new boolean[n+1][sum+1];
+   for(int i=0;i<=n;i++)
+           dp[i][0]=true;
+    
+  for(int i=1;i<=n;i++)
+  {
+      for(int j=1;j<=sum;j++)
+      {
+        if(nums[i-1]<=j)
+     dp[i][j]= dp[i-1][j-nums[i-1]] || dp[i-1][j];
+     else
+      dp[i][j]= dp[i-1][j]; 
+      }
+  }
+   return dp[n][sum]; 
+  }
+}
+
+
+
+
+
+4. Count of subsets with sum equal to X
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5.  Unbounded knapsack
+
+Recursive approach
+
+    static int knapSack(int N, int W, int val[], int wt[])
+    {
+        // code here
+        return solve(N,W,val,wt);
+    }
+    
+    static int solve(int N,int W,int val[],int wt[])
+    {
+        if(N==0 || W==0)
+         return 0;
+      
+      if(wt[N-1]<=W)
+      {
+          return Math.max(solve(N-1,W,val,wt),val[N-1]+solve(N,W-wt[N-1],val,wt));
+      }
+      else
+       return solve(N-1,W,val,wt);
+    }
+}
+
+
+
+Top down approach 
+ static int knapSack(int N, int W, int val[], int wt[])
+    {
+        // code here
+        return solve(N,W,val,wt);
+    }
+    
+    static int solve(int N,int W,int val[],int wt[])
+    {
+        
+      int dp[][]= new int[N+1][W+1];
+      for(int i=1;i<=N;i++)
+      {
+          for(int j=1;j<=W;j++)
+          {
+              if(wt[i-1]<=j)
+               {
+              dp[i][j]= Math.max(dp[i-1][j],val[i-1]+dp[i][j-wt[i-1]]);
+              }
+          else
+            dp[i][j]= dp[i-1][j]; 
+          }
+      }
+      return dp[N][W];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rod Cutting Problem
+
+// { Driver Code Starts
+
+
+import java.io.*;
+import java.util.*;
+
+class RodCutting {
+
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int t = sc.nextInt();
+        while (t-- > 0) {
+            int n = sc.nextInt();
+            int[] arr = new int[n];
+            for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+            Solution ob = new Solution();
+            System.out.println(ob.cutRod(arr, n));
+        }
+    }
+}
+// } Driver Code Ends
+
+
+class Solution{
+    public int cutRod(int price[], int n) {
+        //code here
+        
+        int length[]= new int[n+1];
+        for(int i=0;i<=n;i++)
+            length[i]=i+1;
+    return solve(n,length,price);
+    
+    }
+    static int solve(int n,int length[],int price[])
+    {
+        
+        int dp[][]= new int[n+1][n+1];
+        
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+               if(length[i-1]<=j)
+               {
+                 dp[i][j]=Math.max(dp[i-1][j],price[i-1]+dp[i][j-length[i-1]]);   
+               }
+               else
+               {
+                 dp[i][j]=dp[i-1][j];
+               }
+            }
+        }
+        
+        return dp[n][n];
+    }
+    
+}
+
+
+
+
+Coin change problem
+
+count combinations
+
+Recursive Memoization solution
+
+class Solution {
+    public long count(int S[], int m, int n) {
+        // code here.
+        
+        long dp[][]=new long[S.length+1][n+1];
+        for(int i=0;i<=S.length;i++)
+        {
+            for(int j=0;j<=n;j++)
+             dp[i][j]=-1;
+        }
+        return solve(S,n,S.length,dp);
+    }
+    static long solve(int S[],int sum,int n,long dp[][])
+    {
+        
+      if(sum==0)
+        return 1;
+      if(sum<0 || n==0)
+        return 0;
+     if(dp[n][sum]!=-1)
+       return dp[n][sum];
+     
+     return dp[n][sum]= solve(S,sum-S[n-1],n,dp)+solve(S,sum,n-1,dp);
+    }
+    
+}
+
+
+
+Top down approach
+
+   public long count(int S[], int m, int sum) {
+        // code here.
+        
+        long dp[][]=new long[S.length+1][sum+1];
+        for(int i=0;i<=S.length;i++)
+         dp[i][0]=1;
+        return solve(S,sum,S.length,dp);
+    }
+    static long solve(int S[],int sum,int n,long dp[][])
+    {
+        
+        
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=sum;j++)
+        {
+           if(S[i-1]<=j)
+           {
+              dp[i][j]= dp[i][j-S[i-1]]+dp[i-1][j]; 
+           }
+           else
+              dp[i][j]=dp[i-1][j];
+        }
+    }
+       return dp[n][sum];
+    }
+    
+}
+
+
+Matrix chain multiplication
+
+
+
+Recursive memoization problems
+
+
+class Solution{
+    static int matrixMultiplication(int N, int arr[])
+    {
+        // code here
+        int dp[][]= new int[N+1][N+1];
+        for(int i=0;i<=N;i++)
+        {
+            for(int j=0;j<=N;j++)
+            {
+                dp[i][j]=-1;
+            }
+        }
+      return solve(arr,1,N-1,dp);
+    }
+    static int solve(int arr[], int i,int j,int dp[][])
+    {
+        if(i>= j)
+        {
+            return dp[i][j]=0;
+        }
+      if(dp[i][j]!=-1)
+        return dp[i][j];
+     dp[i][j]=Integer.MAX_VALUE;
+      for(int k=i;k<j;k++)
+      {
+          dp[i][j]=Math.min(dp[i][j],
+          solve(arr,i,k,dp)+solve(arr,k+1,j,dp)+arr[i-1]*arr[k]*arr[j]
+          );
+      }
+      return dp[i][j];
+    }
+}
+
+
+
+// Dynamic Programming Java implementation of Matrix
+// Chain Multiplication.
+// See the Cormen book for details of the following
+// algorithm
+class MatrixChainMultiplication
+{
+
+	// Matrix Ai has dimension p[i-1] x p[i] for i = 1..n
+	static int MatrixChainOrder(int p[], int n)
+	{
+		/* For simplicity of the
+		program, one extra row and
+		one extra column are allocated in m[][]. 0th row
+		and 0th column of m[][] are not used */
+		int m[][] = new int[n][n];
+
+		int i, j, k, L, q;
+
+		/* m[i, j] = Minimum number of scalar
+		multiplications needed to compute the matrix
+		A[i]A[i+1]...A[j] = A[i..j] where
+		dimension of A[i] is p[i-1] x p[i] */
+
+		// cost is zero when multiplying one matrix.
+		for (i = 1; i < n; i++)
+			m[i][i] = 0;
+
+		// L is chain length.
+		for (L = 2; L < n; L++)
+		{
+			for (i = 1; i < n - L + 1; i++)
+			{
+				j = i + L - 1;
+				if (j == n)
+					continue;
+				m[i][j] = Integer.MAX_VALUE;
+				for (k = i; k <= j - 1; k++)
+				{
+					// q = cost/scalar multiplications
+					q = m[i][k] + m[k + 1][j]
+						+ p[i - 1] * p[k] * p[j];
+					if (q < m[i][j])
+						m[i][j] = q;
+				}
+			}
+		}
+
+		return m[1][n - 1];
+	}
+
+	// Driver code
+	public static void main(String args[])
+	{
+		int arr[] = new int[] { 1, 2, 3, 4 };
+		int size = arr.length;
+
+		System.out.println(
+			"Minimum number of multiplications is "
+			+ MatrixChainOrder(arr, size));
+	}
+}
+/* This code is contributed by Rajat Mishra*/
+
+
+
+
+Palindrome Partitioning
+
+
+
+Recursive memoization
+class Solution{
+    static int palindromicPartition(String str)
+    {
+        // code here
+        
+        if(isPalindrome(str,0,str.length()-1))
+          return 0;
+          
+        int n=str.length();   
+        int dp[][]= new int[n][n];
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                dp[i][j]=-1;
+            }
+        }
+        return solve(str,0,str.length()-1,dp);
+    }
+    
+    static int solve(String str,int i,int j,int dp[][])
+    {
+        if(i>=j)
+         return dp[i][j]=0;;
+      if(isPalindrome(str,i,j))
+        return dp[i][j]=0;
+        if(dp[i][j]!=-1)
+           return dp[i][j];
+       dp[i][j]=Integer.MAX_VALUE;
+      for(int k=i;k<=j-1;k++)
+      {
+          dp[i][j]=Math.min(dp[i][j],1+
+          solve(str,i,k,dp)+solve(str,k+1,j,dp));
+      }
+      return dp[i][j];
+    }
+    static boolean isPalindrome(String str,int i,int j)
+    {
+        while(i<j)
+        {
+            if(str.charAt(i)!=str.charAt(j))
+              return false;
+           i++;
+           j--;
+        }
+        return true;
+    }
+}
+
+Memoisation optimization 
+
+static int solve(String str,int i,int j,int dp[][])
+    {
+        if(i>=j)
+         return dp[i][j]=0;;
+      if(isPalindrome(str,i,j))
+        return dp[i][j]=0;
+        if(dp[i][j]!=-1)
+           return dp[i][j];
+       dp[i][j]=Integer.MAX_VALUE;
+       int left=0,right=0;
+      for(int k=i;k<=j-1;k++)
+      {
+          
+          if(dp[i][k]!=-1)
+          {
+             left=dp[i][k];
+          }
+          else
+          {
+              left= solve(str,i,k,dp);
+              dp[i][k]=left;
+          }
+          if(dp[k+1][j]!=-1)
+          {
+             right=dp[k+1][j];
+          }
+          else
+          {
+              right= solve(str,k+1,j,dp);
+              dp[i][k]=right;
+          }
+          dp[i][j]=Math.min(dp[i][j],1+left+right);
+      }
+      return dp[i][j];
+    }
+    static boolean isPalindrome(String str,int i,int j)
+    {
+        while(i<j)
+        {
+            if(str.charAt(i)!=str.charAt(j))
+              return false;
+           i++;
+           j--;
+        }
+        return true;
+    }
+}
+
+
+
+Evaluate Expression to True Boolean Parenthesization
+
+
+class Solution{
+    static HashMap<String, Integer> map;
+    static int numOfWaysForTrueBUDPMap(String str, int i, int j, boolean isTrue) {
+		String temp = new String(i + "_" + j + "_" + isTrue);
+		if(map.containsKey(temp)) {
+			return map.get(temp);
+		}
+		if(i > j) {
+			map.put(temp, 0);
+			return 0;
+		}
+		if(i == j) {
+			char sign = str.charAt(i);
+			if(isTrue && sign == 'T') {
+				map.put(temp, 1);
+				return 1;
+			}
+			if(!isTrue && sign == 'F') {
+				map.put(temp, 1);
+				return 1;
+			}
+			map.put(temp, 0);
+			return 0;
+		}
+
+		int ans = 0;
+		for(int k = i + 1; k < j; k += 2) {
+			int leftFalse, leftTrue, rightFalse, rightTrue;
+			String left1 = new String(i + "_" + (k - 1) + "_true"), left2 = new String(i + "_" + (k - 1) + "_false");
+			String right1 = new String((k + 1) + "_" + j + "_true"), right2 = new String((k + 1) + "_" + j + "_false");
+			if(map.containsKey(left1)) {
+				leftTrue = map.get(left1);
+			} else {
+				leftTrue = numOfWaysForTrueBUDPMap(str, i, k - 1, true) % 1003;
+				map.put(left1, leftTrue);
+			}
+			if(map.containsKey(left2)) {
+				leftFalse = map.get(left2);
+			} else {
+				leftFalse = numOfWaysForTrueBUDPMap(str, i, k - 1, false) % 1003;
+				map.put(left2, leftFalse);
+			}
+			if(map.containsKey(right1)) {
+				rightTrue = map.get(right1);
+			} else {
+				rightTrue = numOfWaysForTrueBUDPMap(str, k + 1, j, true) % 1003;
+				map.put(right1, rightTrue);
+			}
+			if(map.containsKey(right2)) {
+				rightFalse = map.get(right2);
+			} else {
+				rightFalse = numOfWaysForTrueBUDPMap(str, k + 1, j, false) % 1003;
+				map.put(right2, rightFalse);
+			}
+
+			char operation = str.charAt(k);
+			if(operation == '&') {
+				if(isTrue) {
+					ans += (leftTrue * rightTrue);
+				} else {
+					ans += (leftFalse * rightTrue + leftTrue * rightFalse + leftFalse * rightFalse);
+				}
+			} else if(operation == '|') {
+				if(isTrue) {
+					ans += (leftTrue * rightFalse + leftFalse * rightTrue + leftTrue * rightTrue);
+				} else {
+					ans += (leftFalse * rightFalse);
+				}
+			} else if(operation == '^') {
+				if(isTrue) {
+					ans += (leftFalse * rightTrue + leftTrue * rightFalse); 
+				} else {
+					ans += (leftTrue * rightTrue + leftFalse * rightFalse);
+				}
+			}
+		}
+
+		map.put(temp, ans % 1003);
+		return ans;
+	}
+	
+    static int countWays(int N, String S){
+        // code here
+        map = new HashMap<String, Integer>();
+        return numOfWaysForTrueBUDPMap(S, 0, S.length() - 1, true) % 1003;
+    }
+}
+

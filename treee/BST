@@ -1,0 +1,578 @@
+Q  Check if Tree is BST
+
+    Stack<TreeNode> stack=new Stack<>();
+    TreeNode curr=root;
+    TreeNode prev=null;
+    while(stack.isEmpty()==false || curr!=null)
+    {
+         if(curr!=null)
+         {
+                 stack.add(curr);
+                curr=curr.left;
+         }
+         else
+         {
+                 TreeNode p=stack.pop();
+                 if(prev!=null&&p.val<=prev.val)
+                         return false;
+               prev=p;
+               curr=p.right;
+         }
+         
+    }
+                    return true;
+            }
+}
+
+Recursive appraoch
+
+ static boolean solve(TreeNode root,long min,long max)
+   {
+       if(root == null)
+               return true;
+       if(root.val<=min || root.val>=max)
+               return false;
+        if(solve(root.left,min,root.val)==false)
+                return false;
+        if(solve(root.right,root.val,max)==false)
+                return false;
+         return true;
+   }
+   
+   
+Q  Binary Search Tree to Greater Sum Tree
+
+The idea is to use reverse Inorder traversal ,first traverse the right subtree ,and keep getting sum 
+ then update the current node value to the res value
+ then recurse for left subtree
+  static int res=0;
+    public TreeNode bstToGst(TreeNode root) {
+        solve(root);
+            res=0;
+            return root;
+    }
+  static int solve(TreeNode root)
+  {
+     if(root==null)
+             return 0;
+      int right=solve(root.right);
+      res+=root.val;
+      root.val=res;
+      
+      int left=solve(root.left);
+       return res;    
+  }
+
+Q .Convert Sorted Array to Binary Search Tree
+
+The idea is to traverse the array from middle elelment create the node taking middle element of array as value
+recurse same for left side of array 
+and same for right side of array
+
+class Solution {
+    static TreeNode root;
+    public TreeNode sortedArrayToBST(int[] nums) {
+     
+     TreeNode l=solve(nums,null,0,nums.length-1);
+      TreeNode temp=root;
+      root=null;
+     return temp;
+    }
+   static TreeNode solve(int nums[],TreeNode curr,int l,int h)
+   {
+      if(h<l)
+        return null; 
+        int mid= (h+l)/2;
+      TreeNode temp= new TreeNode(nums[mid]);// creating a new node using curr value
+      if(root==null)
+      {
+         root=temp; // putting the refernce of first element to the root node
+         curr=root ; // keeping a curr node for mainting link
+      }  
+     temp.left=solve(nums,curr,l,mid-1);
+     temp.right=solve(nums,curr,mid+1,h);
+     
+     return temp;
+   }
+ }
+  
+  
+ Q  . Lowest Common Ancestor of a Binary Search Tree
+ 
+ Recursive solution
+ 
+ TC O(n)
+ Sc O(h)
+ 
+ 
+   public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+      if(root ==null)
+              return root;
+      if(p.val<root.val&&q.val>root.val)
+              return root;
+      if(p.val>root.val&&q.val< root.val)
+              return root;
+      if(p.val<root.val&&q.val<root.val)
+              return lowestCommonAncestor(root.left,p,q);
+      if(p.val>root.val&&q.val>root.val)
+              return lowestCommonAncestor(root.right,p,q);
+       return root;
+    }
+
+Iterative Solution
+
+ TC O(n)
+ Sc O(1)
+ 
+class Solution {
+        //the idea is to keep going down according to the value of both p and q with respect to the root value
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+     while(root!=null)
+     {
+        if(q.val<root.val&&p.val<root.val)
+                root=root.left;
+        else if(p.val>root.val&&q.val>root.val)
+                root=root.right;
+        else
+                break;
+     }
+            return root;
+    } 
+   
+   
+   
+   
+   
+   
+Q Convert a Binary tree to DLL
+
+
+The idea is to use iterative indorder traversal appraoch and keep connnecting left and right pointer to previous and curr Node respectively
+
+   //Function to convert binary tree to doubly linked list and return it.
+    Node bToDLL(Node root)
+    {
+	//  Your code here	
+	Stack<Node> stack= new Stack<>();
+	
+	Node head=null;
+	Node curr=root;
+	Node prev=null;
+	while(curr!=null || stack.isEmpty()==false)
+	{
+	   while(curr!=null)
+	   {
+	       stack.push(curr);
+	       curr=curr.left;
+	   }
+	   
+	  curr=stack.pop();
+	  if(head==null)
+	  {
+	      head=curr;
+	      prev=curr;
+	  }
+	  else
+	  {
+	     curr.left=prev;
+	     prev.right=curr;
+	     prev=curr;
+	  }
+	  curr=curr.right;
+	   
+	}
+	
+	return head;
+    }
+}
+
+Recursive Solution
+
+class Solution
+{
+    //Function to convert binary tree to doubly linked list and return it
+    
+    Node prev=null;
+    Node bToDLL(Node root)
+    {
+	//  Your code here	
+      if(root == null)
+        return root;
+    Node head=bToDLL(root.left);
+	  if(prev==null)
+	  {
+	      head=root;
+	  }
+	  else
+	  {
+	     root.left=prev;
+	     prev.right=root;
+	  }
+	  prev=root;
+	  bToDLL(root.right);
+	  return head;
+    }
+}
+
+Q Merge 2 binary tree
+
+static TreeNode solve(TreeNode root1,TreeNode root2)
+    {
+       if(root1==null&&root2==null)
+               return null;
+       int first=root1!=null ?root1.val : 0;
+       int second=root2!=null ? root2.val :0 ;
+       TreeNode temp=new TreeNode(first+second);
+       TreeNode fLeft=root1!=null?root1.left :null;
+       TreeNode fRight=root1!=null ?root1.right : null;
+       TreeNode sRight=root2!=null ? root2.right :null;
+       TreeNode sLeft=root2!=null ? root2.left:null;
+       if(root ==null)
+       {
+          root=temp;
+       }
+          temp.left=solve(fLeft,sLeft);
+          temp.right=solve(fRight,sRight);
+              
+            return temp;
+    }
+    
+    
+    
+    
+ Q Construct BST from preorder traversal
+ 
+ 
+ O(n2) worst case
+  O(nlogn) average case
+  1. Create root node 
+  2. Find the index of element that is greater that current elelment in preorder traversal
+  3. Recurse for the left childer with start as start boundaryt index-1 as end boundary
+  4. Recurse for the right children with index as start and end as last boundary
+   public TreeNode bstFromPreorder(int[] preorder) {
+      return solve(preorder,0,preorder.length-1);   
+    }
+   static TreeNode solve(int []pre,int start,int end)
+   {
+      if(start> end)
+              return null;
+      TreeNode temp= new TreeNode(pre[start])     ;
+      
+      if(start==end)
+          return temp;
+      int index=-1;
+      int i=start+1;
+      while(i<=end)
+      {
+         if(pre[i]>pre[start])
+         {
+                 index=i;
+                 break;
+         }
+              i++;
+      }
+   index=i;
+   temp.left=solve(pre,start+1,index-1);
+   temp.right=solve(pre,index,end);
+           
+    return temp;
+   }
+}
+
+
+Better solution with Linear time complexity
+
+ 1.  static int index=0;
+    public TreeNode bstFromPreorder(int[] preorder) {
+      TreeNode temp= solve(preorder,Integer.MAX_VALUE);
+            index=0;
+         return temp;
+    }
+   static TreeNode solve(int []pre,int parent_value)
+   {
+      if(index==pre.length || pre[index]>parent_value)
+              return null;
+     int data=pre[index++];
+      TreeNode temp= new TreeNode(data)     ;
+      
+   temp.left=solve(pre,data);
+   temp.right=solve(pre,parent_value);
+           
+    retu  temp;
+    
+    }
+    }
+    
+    
+    
+Q  99. Recover Binary Search Tree
+
+ the idea is to find two node with having incorrect position 
+  there may be two cases
+  a. both nodes are adjacent to each other - in this case swap nodes with each other
+  b. both nodes are not adjacent to each other - in this case just swap two nodes values    
+  
+  Use inorder traversal by maintaing a prev value to check if value is not in order
+  
+  class Solution {
+    static TreeNode middle;
+    static TreeNode first;
+    static TreeNode second;
+    static TreeNode prev;
+    public void recoverTree(TreeNode root) {
+        
+
+        solve(root);
+          // System.out.println(second.val);
+        if(first!=null&&second!=null)
+        {
+         int temp=first.val;
+         first.val=second.val;
+       second.val=temp; 
+         // System.out.println("in first");
+        }
+        else{
+         int temp=first.val;
+         first.val=middle.val;
+         middle.val=temp;
+ // System.out.println("in second");
+        }
+        first=null;
+        second=null;
+      middle=null;
+         prev=null;
+            // return root;
+    }
+  static void solve(TreeNode root)
+  {
+
+    if(root==null)
+            return;
+    // System.out.println(root.val);      
+   
+   // System.out.println(root.val);
+   
+   solve(root.left);
+    if(prev!=null&&root.val<prev.val)
+   {
+     if(first==null)
+     {
+       middle=root;
+       first=prev;
+     }
+      else
+      {
+        second=root;
+      }
+           
+   }
+          prev=root;
+   solve(root.right);
+   }
+}
+
+Efficient approach using Morris Traversal algo
+
+public void recoverTree(TreeNode root) {
+        TreeNode pre = null;
+        TreeNode first = null, second = null;
+        // Morris Traversal
+        TreeNode temp = null;
+		while(root!=null){
+			if(root.left!=null){
+				// connect threading for root
+				temp = root.left;
+				while(temp.right!=null && temp.right != root)
+					temp = temp.right;
+				// the threading already exists
+				if(temp.right!=null){
+				    if(pre!=null && pre.val > root.val){
+				        if(first==null){first = pre;second = root;}
+				        else{second = root;}
+				    }
+				    pre = root;
+				    
+					temp.right = null;
+					root = root.right;
+				}else{
+					// construct the threading
+					temp.right = root;
+					root = root.left;
+				}
+			}else{
+				if(pre!=null && pre.val > root.val){
+				    if(first==null){first = pre;second = root;}
+				    else{second = root;}
+				}
+				pre = root;
+				root = root.right;
+			}
+		}
+		// swap two node values;
+		if(first!= null && second != null){
+		    int t = first.val;
+		    first.val = second.val;
+		    second.val = t;
+		}
+    }
+    
+    
+    
+Q  230. Kth Smallest Element in a BST
+
+Recursive Inorder traversal
+
+class Solution {
+    static int res=-1;
+    public int kthSmallest(TreeNode root, int k) {
+       
+       int index[]=new int[1];
+       
+      solve(index,k,root);
+           int temp=res;
+           res=-1;
+      return temp;
+    }
+  static void solve(int index[],int k,TreeNode root){
+       if(root ==null)
+               return;
+     
+   solve(index,k,root.left);
+  index[0]++;
+  if(index[0]==k&&res==-1){
+         res=root.val;
+         return;
+     }
+   solve(index,k,root.right);
+  }
+}
+
+Iterative inorder traversal
+
+class Solution {
+  public int kthSmallest(TreeNode root, int k) {
+    LinkedList<TreeNode> stack = new LinkedList<>();
+
+    while (true) {
+      while (root != null) {
+        stack.push(root);
+        root = root.left;
+      }
+      root = stack.pop();
+      if (--k == 0) return root.val;
+      root = root.right;
+    }
+  }
+}
+
+ 
+ Q  Serialize and Deserialze a binary tree 
+
+
+public class Codec {
+   static String spliter=",";
+   static String NN="X";
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+    
+     StringBuilder s=new StringBuilder("");
+     buildString(root,s);
+     return s.toString();
+    }
+  static void buildString(TreeNode root,StringBuilder s){
+      if(root ==null)
+      {
+         s.append(NN).append(spliter);
+         return;
+      }
+     s.append(String.valueOf(root.val)).append(spliter); 
+     buildString(root.left,s);
+     buildString(root.right,s);
+  }
+   
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+     Queue<String> q= new LinkedList<>();
+     q.addAll(Arrays.asList(data.split(spliter)));
+     return buildTree(q); 
+    }
+   static TreeNode buildTree(Queue<String> q){
+      String val=q.poll();
+      if(val.equals(NN))
+              return null;
+     TreeNode temp=new TreeNode(Integer.parseInt(val));
+     temp.left=buildTree(q); 
+     temp.right=buildTree(q);
+     return temp;
+   }
+}
+
+
+Q  kth ancestor of a node in binary tree
+
+The idea is to do preorder traversal as soon as we get that node we climb up and reduce the k and when k becomes zero our answer will be that node.val
+   class Tree
+{
+    static boolean found;
+    static int ans=-1;
+    static int c;
+    public int kthAncestor(Node root, int k, int node)
+    {
+        //Write your code here
+        c=k;
+        boolean flag=solve(root,node);
+        // if(flag==false)
+        int temp=ans;
+        ans=-1;
+        return temp;
+    }
+   static boolean solve(Node root,int node){
+       if(root==null)
+          return false;
+     if (root.data == node)
+    {
+         
+        // Reduce count by 1
+        c = c-1;
+        return true;
+    }
+    else
+    {
+     
+        // Checking in left side
+        boolean flag = solve(root.left, node);
+        if (flag)
+        {
+            if (c == 0)
+            {
+             
+                // If count = 0 i.e. element is found
+                // System.out.print("[" + root.data + "] ");
+                ans=root.data;
+                return false;
+            }
+         
+            // If count !=0 i.e. this is not the
+            // ancestor we are searching for
+            // so decrement count
+            c = c - 1;
+            return true;
+        }
+     
+        // Similarly Checking in right side
+        boolean flag2 = solve(root.right, node);
+        if (flag2)
+        {
+            if (c == 0)
+            {
+                // System.out.print("[" + root.data + "] ");
+                ans=root.data;
+                return false;
+            }
+            c = c - 1;
+            return true;
+        }
+    }
+    return false;
+   }    
+}

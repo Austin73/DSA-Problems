@@ -1,0 +1,203 @@
+1. Two Sum
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+       
+       
+       HashMap<Integer,Integer> map= new HashMap<>();
+       int res[] = new int[2];
+            if(nums.length == 2)
+              {
+                    res[0]=0;
+                    res[1]=1;
+            }
+       for(int i=0;i<nums.length;i++)
+       {
+             int temp=target - nums[i];
+             if(map.containsKey(temp))
+             {
+                res[0]=map.get(temp);
+                res[1]= i;
+                break;
+             }
+             map.put(nums[i],i);
+       }
+            return res;
+    }
+}
+
+2. Two Sum II - Input Array Is Sorted
+
+class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+            int l=numbers.length-1;
+            int res[]= new int[2];
+       int left=0;
+       int right=l;
+       while(left<right)
+       {
+           int currSum=numbers[left]+numbers[right];
+           if( currSum==  target)
+           {
+                res[0]=left+1;
+                res[1]=right+1;
+                   break;
+           }
+           else if(currSum<target)
+                   left++;
+           else
+                   right--;
+       }
+            return res;
+    }
+}
+
+
+
+3.. Merge Sorted Array
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        
+            int i=m-1;
+            int j=n-1;
+            int k=m+n-1;
+            while(j>=0&&i>=0)
+            {
+                    if(nums1[i]>nums2[j])
+                    {
+                            nums1[k]=nums1[i];
+                            i--;
+                            k--;
+                    }
+                    else
+                    {
+                            nums1[k]=nums2[j];
+                            j--;
+                            k--;
+                    }
+            }
+            while(j>=0)
+            {
+                    nums1[k]=nums2[j];
+                    j--;
+                    k--;
+            }
+    }
+}
+
+
+4. Pascal's Triangle
+
+
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        
+            List<List<Integer>>  res= new ArrayList<>();
+            List<Integer> temp= new ArrayList<>();
+            temp.add(1);
+            res.add(temp);
+            if(numRows == 1)
+                   return res;
+           solve(numRows,res,1);
+           return res;
+    }
+        
+  public static void solve(int numRows,List<List<Integer>> res,int curr){
+          if(curr == numRows)
+          {
+                  return ;
+          }
+       List<Integer> temp=res.get(res.size()-1);
+       
+       List<Integer> input= new ArrayList<>();
+       int count= temp.size()+1;
+       input.add(1);
+       int i=0;
+       while(i<count-2)
+       {
+          int a=  temp.get(i);
+          int b= temp.get(i+1);
+           input.add(a+b);
+           i++;
+       }
+        input.add(1);
+        res.add(input);
+        solve(numRows,res,curr+1);
+  }
+}
+
+
+
+
+5. Pascal's Triangle II
+
+Solution 1st
+
+class Solution {
+    public List<Integer> getRow(int rowIndex) {
+   
+            List<Integer> prev= new ArrayList<>();
+            prev.add(1);
+            
+            if(rowIndex == 0)
+                   return prev;
+          return solve(rowIndex,prev,0);
+   
+    }
+        
+  public static List<Integer> solve(int rowIndex,List<Integer> prev,int currInd){
+          if(rowIndex == currInd)
+          {
+                  return prev;
+          }
+       List<Integer> curr= new ArrayList<>();
+       int count= prev.size()+1;
+       curr.add(1);
+       int i=0;
+       while(i<count-2)
+       {
+          int a=  prev.get(i);
+          int b= prev.get(i+1);
+           curr.add(a+b);
+           i++;
+       }
+        curr.add(1);
+        
+       return solve(rowIndex,curr,currInd+1);
+  }
+}
+
+Solution 2nd
+Here is my faster code, beats 99.9%. O(k) Time. The idea deprives from binomial factor.
+For example, rowIndex = 6.
+
+
+
+1st: 1=1
+2nd: 6= 6 / 1
+3rd: 15=6x5 / (1x2)
+4th: 20=6x5x4 / (1x2x3)
+5th: 15=6x5x4x3 / (1x2x3x4)
+6th: 6 =6x5x4x3x2 / (1x2x3x4x5)
+7th: 1 =6x5x4x3x2x1 / (1x2x3x4x5x6)
+
+https://leetcode.com/problems/pascals-triangle-ii/discuss/1203260/Very-easy-O(N)-time.-0-ms-beats-100-(simple-maths)-ALL-LANGUAGES
+
+class Solution {
+    public List<Integer> getRow(int rowIndex) {
+        List<Integer> res = new LinkedList<>();
+         res.add(1);
+        if (rowIndex == 0) return res;
+        int t = rowIndex, b = 1;
+        long cur = 1;
+        for(int i = 1; i < rowIndex+1; i++){
+            cur = cur * t;
+            cur = cur / b;
+            res.add((int)cur);
+            t--;b++;
+        }
+        return res;
+    }
+
+

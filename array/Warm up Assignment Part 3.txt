@@ -1,4 +1,4 @@
-202. Happy Number
+1. Happy Number
 
 https://leetcode.com/problems/happy-number/discuss/56917/My-solution-in-C(-O(1)-space-and-no-magic-math-property-involved-)  use Floyd Cycle detection algorithm.
 
@@ -47,13 +47,32 @@ public boolean isHappy(int n) {
     }
 	
 	
-231. Power of Two
+2. Power of Two
+
+class Solution {
+    public boolean isPowerOfTwo(int n) { 
+            if(n<=0)
+                return false;
+    if(n==1)
+        return true;
+     n=Math.abs(n);
+            int count=0;
+     for(int i=0;i<32;i++)
+     {
+          // int k=Math.abs(nums[j]);
+          //  p+=(k&(1<<i))!=0 ?1 :0;
+          if((n&(1<<i))!=0)
+                  count++;
+     }
+            if(count>1)
+                    return false;
+            return true;
+}
+}
 
 
 
-
-
-242. Valid Anagram
+3. Valid Anagram
  public boolean isAnagram(String s, String t) {
         if(s.length()!=t.length())
                 return false;
@@ -86,9 +105,35 @@ public boolean isHappy(int n) {
           else
                  return false;
     }
+
+
+4. Ugly Number	
+class Solution {
+    public boolean isUgly(int n) {
+        if(n==0)
+         return false;
+       while(n%2==0)
+       {
+               n=n/2;
+       }
+       while(n%3==0)
+       {
+             n=n/3;
+       }
+       while(n%5==0)
+       {
+             n=n/5;
+       }
+       if(n==1)
+           return true;
+        else
+           return false;
+  }
+}
+
+
 	
-	
-283. Move Zeroes
+5. Move Zeroes
 	
 	 public void moveZeroes(int[] nums) {
         
@@ -107,7 +152,7 @@ public boolean isHappy(int n) {
             
     }
 	
-345. Reverse Vowels of a String
+6. Reverse Vowels of a String
 
 public String reverseVowels(String s) {
         
@@ -141,7 +186,7 @@ if(ch=='a' || ch == 'A' || ch == 'e' || ch== 'E' || ch == 'i' || ch == 'I' || ch
         }
 
 
-14. Third Maximum Number
+7. Third Maximum Number
 
 public int thirdMax(int[] nums) {
         long first=Long.MIN_VALUE;
@@ -178,7 +223,43 @@ public int thirdMax(int[] nums) {
         
     }
 
-1945. Sum of Digits of String After Convert
+
+9. Find the Difference
+
+  public char findTheDifference(String s, String t) {
+       
+        int store[]= new int[26];
+        for(int i=0;i<s.length();i++)
+        {
+           int index= s.charAt(i)-'a';
+           store[index]=store[index]+1;
+        }
+        for(int i=0;i<t.length();i++)
+        {
+            int index= t.charAt(i)-'a';
+            if(store[index]==0)
+                 return t.charAt(i);
+            store[index]--;
+        }
+          return 'a';
+    }
+    
+    
+10. Add Digits    
+  class Solution {
+    public int addDigits(int num) {
+         if(num==0)
+          return 0;
+        if(num%9==0)
+                return 9;
+         int rem=num%9;
+          return rem;
+                
+    }
+}  
+    
+
+9. Sum of Digits of String After Convert
 
 class Solution {
     public int getLucky(String s, int k) {
@@ -216,24 +297,8 @@ class Solution {
         }
             return num;
     }
-}
-
-389. Find the Difference
-
-  public char findTheDifference(String s, String t) {
-       
-        int store[]= new int[26];
-        for(int i=0;i<s.length();i++)
-        {
-           int index= s.charAt(i)-'a';
-           store[index]=store[index]+1;
-        }
-        for(int i=0;i<t.length();i++)
-        {
-            int index= t.charAt(i)-'a';
-            if(store[index]==0)
-                 return t.charAt(i);
-            store[index]--;
-        }
-          return 'a';
-    }
+}  
+    
+    
+    
+    

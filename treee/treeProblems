@@ -1,0 +1,1044 @@
+1123. Lowest Common Ancestor of Deepest Leaves
+
+Approach is that find the left height and rightheight of each node if 
+   both side has same height then current node will be answer 
+   otherwise search in subtree with max height
+ public TreeNode subtreeWithAllDeepest(TreeNode root) {
+        
+      int leftHeight=height(root.left);
+      int rightHeight=height(root.right);
+      if(leftHeight==rightHeight)
+              return root;
+      if(leftHeight>rightHeight)
+              return subtreeWithAllDeepest(root.left);
+      else
+              return subtreeWithAllDeepest(root.right);
+    }
+   public static int height(TreeNode root)
+   {
+      if(root==null)
+              return 0;
+      int lHeight=height(root.left);
+      int rHeight=height(root.right);
+      return 1+Math.max(lHeight,rHeight);
+   }
+   
+ Tc- O(N2)
+ 
+ Efficient Solution
+ 
+ Instead of repeatedly finding height ,store height in hashmap for each node
+ and just return if already calculated
+ static HashMap<TreeNode,Integer> mp=new HashMap<>();
+    public TreeNode subtreeWithAllDeepest(TreeNode root) {
+        
+      int leftHeight=height(root.left);
+      int rightHeight=height(root.right);
+      if(leftHeight==rightHeight)
+              return root;
+      if(leftHeight>rightHeight)
+              return subtreeWithAllDeepest(root.left);
+      else
+              return subtreeWithAllDeepest(root.right);
+    }
+   public static int height(TreeNode root)
+   {
+      if(root==null)
+              return 0;
+      if(mp.containsKey(root))
+              return mp.get(root);
+      int lHeight=height(root.left);
+      int rHeight=height(root.right);
+      mp.put(root,1+Math.max(lHeight,rHeight));
+      return mp.get(root);
+   }
+}
+
+
+
+
+
+Q2. Lowest Common Ancestor of a Binary Tree
+
+First approacch is to find the path from root to both node and find the last equal elements in both path
+that will be the lowest common ancestor of both node
+
+TC-O(N)
+SC-  O(N)
+  public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+      
+     ArrayList<TreeNode> list1= new ArrayList<>();
+     ArrayList<TreeNode> list2= new ArrayList<>();
+     boolean found=getPath(root,list1,p);
+     found=getPath(root,list2,q);
+     int i=0;
+     TreeNode ans=null;
+     while(list1.get(i)==list2.get(i))
+     {
+       ans=list1.get(i);
+       if(i+1 ==list1.size() || i+1 ==list2.size())
+               break;
+       i++;      
+     }
+            return ans;
+    }
+  public static boolean getPath(TreeNode root,ArrayList<TreeNode> list,TreeNode p)
+  {
+    if(root ==null)
+           return false;
+    if(root==p)
+    {
+      list.add(root);
+      return true;
+    }
+   list.add(root);
+   if(getPath(root.left,list,p) || getPath(root.right,list,p))
+           return true;
+   list.remove(list.size()-1);
+   return false;
+  }
+}
+
+git clone https://github.com/RentoMojo/rentomojo.git
+maneesh-rmojo
+Zubilentfood
+
+Approach 2
+
+Our appraoch is to find if we can find any node in left and right
+if we found on left then return left and if on right then return right
+and if both left and right is not null that means our current node is result
+ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+   
+        if(root==null || root==p || root ==q)
+                return root;
+        TreeNode left=lowestCommonAncestor(root.left,p,q);
+        TreeNode right=lowestCommonAncestor(root.right,p,q);
+        if(left==null)
+                return right;
+        else if(right==null)
+                return left;
+        else
+                return root;
+    }
+
+}
+
+
+Q3  Sum Root to Leaf Numbers
+
+
+  public int sumNumbers(TreeNode root) {
+    return sumNodes(root, 0);
+  }
+
+  private int sumNodes(TreeNode root, int currentSum) {
+    if (root == null) return 0;
+    currentSum = currentSum * 10 + root.val;
+    if (root.left == null && root.right == null) return currentSum;
+    int leftSum = sumNodes(root.left, currentSum);
+    int rightSum = sumNodes(root.right, currentSum);
+    return leftSum + rightSum;
+  }
+
+Shop up is Bangladesh Company
+
+
+Approah 2nd
+ static int res=0;
+    public int sumNumbers(TreeNode root) {
+   
+    int fact=1;
+    int currSum=0;
+    solve(root,"");
+    int temp=res;
+    res=0;
+    return temp;
+    }
+  public static void solve(TreeNode root,String currSum)
+  {
+     if(root == null)
+             return;
+     // currSum+=String.valueOf(root.val);
+    if(root.left==null&&root.right==null)
+    {
+        res+=Integer.parseInt(currSum+String.valueOf(root.val));
+        return;
+    }
+   solve(root.left,currSum+String.valueOf(root.val));
+   solve(root.right,currSum+String.valueOf(root.val));
+          
+  }
+}
+
+
+
+Q3 Left View of binary Tree
+
+  First Approach
+   Iterative approach
+   Use level order traversal
+   
+ Second approach
+  Use 
+  
+  Set<Integer> set= new HashSet<>();
+ArrayList<TreeNode> res= new ArrayList<>();
+static void LOT(TreeNode root,int level)
+{
+    if(root==null)
+      return;
+  if(set.contains(level)==false)
+    {
+       res.add(root);
+       set.add(level);
+    }
+    
+   LOT(root.left,level+1);  
+   LOT(root.right,level+1);
+}
+
+More efficient approach
+
+Use a global variable that will tell whether any level has already visited
+
+static int temp=-1;
+
+static void leftView(TreeNode root,int level)
+{
+   if(!root)
+    return;
+  
+ if(temp <level)
+ {
+   res.add(root.data);
+   temp=level;
+ }
+
+   leftView(root.left,level+1)
+   leftView(root.right,level+1);
+}
+
+
+Q.  Top view of binary Tree
+
+   static ArrayList<Integer> topView(Node root)
+    {
+        // add your code
+        TreeMap<Integer,Pair> map=new TreeMap<>();
+        solve(map,0,0,root);
+        ArrayList<Integer> res=new ArrayList<>();
+        
+        for(Map.Entry<Integer,Pair> entry: map.entrySet())
+        {
+            res.add(entry.getValue().node.data);
+        }
+        return res;
+    }
+    public static void solve(TreeMap<Integer,Pair> map,int hd,int vd,Node root)
+    {
+        if(root==null)
+           return ;
+       if(map.containsKey(hd)== true)
+       {
+         Pair temp=map.get(hd);
+         if(temp.vd>vd)   // if we find the node with same horizontal distance but lesser vertical distance then update this node to ans set
+         {
+             temp.vd=vd;
+             temp.node=root;
+             map.put(hd,temp);
+         }
+       }
+       else
+       {
+          Pair temp=new Pair(vd,root); 
+          map.put(hd,temp);
+       }
+       solve(map,hd-1,vd+1,root.left);
+       solve(map,hd+1,vd+1,root.right);
+    }
+ 
+ 
+ Iterative solution using Queue
+ 
+ class qObj
+{
+    Node node;
+    int level;
+    qObj(Node n,int l)
+    {
+        node=n;
+        level=l;
+    }
+}
+
+class Solution
+{
+    //Function to return a list of nodes visible from the top view 
+    //from left to right in Binary Tree.
+    public static ArrayList<Integer> topView(Node root)
+    {
+        ArrayList<Integer> ans = new ArrayList<>();
+        
+        //creating empty queue for level order traversal.
+        Queue<qObj> q=new LinkedList<qObj>();
+        q.add(new qObj(root,1));
+        
+        //creating a map to store nodes at a particular horizontal distance.
+        Map<Integer,Integer> map=new TreeMap<Integer,Integer>();
+       
+        while(!q.isEmpty())
+        {
+            qObj popped=q.poll();
+            if(!map.containsKey(popped.level))
+            map.put(popped.level,popped.node.data);
+            
+            //if left child of popped.node exists, pushing it in
+            //the queue with the horizontal distance.
+            if(popped.node.left!=null)
+            q.add(new qObj(popped.node.left,popped.level-1));
+            
+            //if right child of popped.node exists, pushing it in
+            //the queue with the horizontal distance.
+            if(popped.node.right!=null)
+            q.add(new qObj(popped.node.right,popped.level+1));
+        }
+        
+        //traversing the map and storing the nodes in list 
+        //at every horizontal distance.
+        for(Map.Entry<Integer,Integer> e:map.entrySet())
+        {
+           ans.add(e.getValue());
+        }
+        
+        //returning the output list.
+        return ans;
+    }
+}   
+
+
+
+
+Q Vertical order traversal of binary tree
+
+class Pair{
+        TreeNode node;
+        int level;
+        int hd;
+        public Pair(TreeNode node,int level,int hd)
+        {
+          this.node=node;
+          this.level=level;
+          this.hd=hd;
+        }
+}
+class Solution {
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+    Queue<Pair> q=new LinkedList<>();
+    TreeMap<Integer,ArrayList<Pair>> map=new TreeMap<>();
+    List<List<Integer>> res= new ArrayList<>();
+    q.add(new Pair(root,0,0));        
+    while(q.isEmpty()==false)
+    {
+       Pair temp=q.poll();
+       if(map.containsKey(temp.hd)==true)
+       {
+        ArrayList<Pair> resForV=map.get(temp.hd);
+        int i=resForV.size()-1;
+        while(i>=0&&resForV.get(i).level==temp.level&&resForV.get(i).hd==temp.hd&&resForV.get(i).node.val>temp.node.val){
+                i--;
+        }
+       resForV.add(i+1,temp);        
+       }
+       else
+       {
+         ArrayList<Pair> resForV=new ArrayList<>();
+         resForV.add(temp);
+         map.put(temp.hd,resForV);      
+       }
+     if(temp.node.left!=null)
+     {
+       q.add(new Pair(temp.node.left,temp.level+1,temp.hd-1));      
+     }
+     if(temp.node.right!=null)
+     {
+       q.add(new Pair(temp.node.right,temp.level+1,temp.hd+1));      
+     }
+    }
+    for(Map.Entry<Integer,ArrayList<Pair>> entry:map.entrySet())
+I    {
+       ArrayList<Pair> temp=entry.getValue();
+       ArrayList<Integer> output=new ArrayList<>();
+       for(Pair item: temp)
+               output.add(item.node.val);
+       res.add(output);
+    }
+   return res;
+    }
+        
+}
+
+
+Q2  Diameter of Binary Tree
+
+
+
+Q3. Minimum depth of binary tree
+
+** Solution 1: DFS 
+ * Key point: 
+ * if a node only has one child -> MUST return the depth of the side with child, i.e. MAX(left, right) + 1
+ * if a node has two children on both side -> re	turn min depth of two sides, i.e. MIN(left, right) + 1
+ * */
+public int minDepth(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+
+    int left = minDepth(root.left);
+    int right = minDepth(root.right);
+    if (left == 0 || right == 0) {
+        return Math.max(left, right) + 1;
+    }
+    else {
+        return Math.min(left, right) + 1;
+    }
+}
+
+BFS is much better here, rather than a DFS approach.
+
+Sure, the solution here is short in terms of lines of code and looks nice, but it's far from optimal.
+
+If you have a tree where say the root's left subtree has a depth of 500 and the right subtree has a depth of 1, the code is going to traverse all the way down the 500 left subtree first before finally traversing the right subtree with a measly depth of 1 and figuring out "d'oh!" that's the min depth.
+
+With BFS, instead of traversing 501 nodes to figure out the min depth, you could've just traversed two. Now imagine if the left subtree comprised of tens of thousands of nodes ...
+
+
+BFS
+
+ public int minDepth(TreeNode root) {
+        if(root==null)
+          return 0;
+    Queue<TreeNode> q= new LinkedList<>();
+         q.add(root);
+         int level=1;
+         while(q.isEmpty()==false)
+         {
+           int size=q.size();
+           for(int i=1;i<=size;i++)
+           {
+              TreeNode temp=q.poll();
+              if(temp.left==null&&temp.right==null)
+                      return level;
+              if(temp.left!=null)
+                      q.add(temp.left);
+              if(temp.right!=null)
+                      q.add(temp.right);
+           }
+            level++;
+         }
+    return level;
+    }
+}
+
+
+Q3 Check if subtree 
+
+static Node Snode;
+    public static boolean isSubtree(Node T, Node S) {
+        // add code here.
+        Snode=S;
+      return solve(T,S);
+    }
+    static boolean solve(Node T,Node S)
+    {
+        if(S==null)
+           return true;
+        if(T==null)
+          return false;
+        if(T.data==S.data&&isIdentical(T,S))
+          return true;
+        
+          if(solve(T.left,S)==true || solve(T.right,S)==true)
+            return true;
+        
+        
+        return false;
+    }
+    static boolean isIdentical(Node T,Node S)
+    {
+        if(T==null&&S==null)
+          return true;
+        if(T==null || S==null)
+          return false;
+        return (S.data==T.data)&&isIdentical(T.left,S.left)&&isIdentical(T.right,S.right);
+    }
+    
+}
+
+Q Sum Tree (Children Sum Property)
+
+  boolean isSumTree(Node root)
+	{
+             // Your code here
+      return solve(root);
+        // boolean temp=ans;
+        // ans=false;
+        // return temp;
+	}
+  static boolean solve(Node root)
+  {
+      if(root==null)
+         return true;
+   if(root.left==null&&root.right==null)
+   {
+       
+   }
+   else
+   {
+       int left=sum(root.left);
+       int right=sum(root.right);
+       if(left+right!=root.data)
+         return false;
+   }
+    
+    if(solve(root.left)==false || solve(root.right)==false)
+       return false;
+    return true;
+  }
+  static int sum(Node root)
+  {
+     if(root==null)
+       return 0;
+     return root.data+sum(root.left)+sum(root.right);
+  }
+}
+
+
+Above approach has TC O(n2)
+below appraoch is O(N) solution
+
+class Solution
+{
+    static boolean res=true;
+	boolean isSumTree(Node root)
+	{
+             // Your code here
+      int l= solve(root);
+        boolean temp=res;
+        res=true;
+        return temp;
+	}
+  static int solve(Node root)
+  {
+     if(res==false||root==null)
+        return 0;
+     if(root.left==null&&root.right==null)
+       {
+           int temp=root.data;
+          
+           return temp;
+       }
+      int lt=root.data+solve(root.left);
+      int rt=root.data+solve(root.right);
+      if(lt+rt!=3*root.data)
+      {
+          res=false;
+          return 0;
+      }
+      return lt+rt-root.data;
+  }
+ 
+}
+
+
+Q Maximum sum of Non-adjacent nodes
+   Appraoch is that try getting sum after including and exclduing each node and return max of both 
+   this appraoch will take exponential time ,so we will be using Dyname programming appraoch here in order to save already calculated result.
+   
+   
+   Recursion approach
+   
+     {
+       if(root==null)
+        return 0;
+      int inc=root.data;
+      if(root.left!=null)
+      {
+          inc+=getSum(root.left.left);
+          inc+=getSum(root.left.right);
+      }
+      if(root.right!=null)
+      {
+          inc+=getSum(root.right.left);
+          inc+=getSum(root.right.right);
+      }
+      int exc=getSum(root.left)+getSum(root.right);
+      return Math.max(inc,exc);
+       
+    }
+
+     static int getMaxSum(Node root)
+    {
+        // add your code here
+        HashMap<Node,Integer> map= new HashMap<>();
+       return getSum(root,map);
+     
+    }
+    static int getSum(Node root,Map<Node,Integer> map)
+    {
+       if(root==null)
+         return 0;
+      if(map.containsKey(root))
+         return map.get(root);
+      int inc=root.data;
+      if(root.left!=null)
+      {
+          inc+=getSum(root.left.left,map);
+          inc+=getSum(root.left.right,map);
+      }
+      if(root.right!=null)
+      {
+          inc+=getSum(root.right.left,map);
+          inc+=getSum(root.right.right,map);
+      }
+      int exc=getSum(root.left,map)+getSum(root.right,map);
+      map.put(root,Math.max(inc,exc));
+      return map.get(root);
+    }
+
+
+
+Q  Diameter of binary Tree
+
+ The idea is to find left height and right height for each node and 
+   return the max for each node which will be diameter of the node
+   this will be O(n2) solution we can optimize the call by stroing height 
+    int diameter(Node root) {
+        // Your code here
+        if(root==null)
+          return 0;
+      
+      int left=getDepth(root.left);
+      int right=getDepth(root.right);
+      int res=left+right+1;
+      return Math.max(res,Math.max(diameter(root.left),diameter(root.right)));
+    }
+    static int getDepth(Node root)
+    {
+        if(root==null)
+          return 0;
+        return 1+ Math.max(getDepth(root.left),getDepth(root.right));
+    }
+    
+Optimized Approach
+here idea is to calculating height of both left and right at the time of first traversal itself instead of calculating height separately
+
+ int dia = 0;
+
+    // Function to find the diameter of a Binary Tree.
+    public int util(Node root) {
+        // if node becomes null, we return 0.
+        if (root == null) return 0;
+
+        // calling the util function recursively for the left and
+        // right subtrees to find their heights.
+        int l = util(root.left);
+        int r = util(root.right);
+
+        // storing the maximum possible value of l+r+1 in diameter.
+        if (l + r + 1 > dia) dia = l + r + 1;
+
+        // returning height of subtree.
+        return 1 + Math.max(l, r);
+    }
+
+
+Q   Maximum Path Sum between 2 Leaf Nodes
+
+ int maxPathSum(Node root)
+    { 
+        // code here 
+     int ans[]= new int[1];
+     ans[0]=Integer.MIN_VALUE;
+     
+    int h= solve(root,ans,null);
+    return ans[0];
+    } 
+  static int solve(Node root,int[] ans,Node parent)
+  {
+     if(root == null)
+       return Integer.MIN_VALUE;
+    
+    int l=solve(root.left,ans,root);
+    int r=solve(root.right,ans,root);
+    int getL=0;
+    int getR=0;
+    if(l==Integer.MIN_VALUE)
+        getL=0;
+    else
+        getL=l;
+    if(r==Integer.MIN_VALUE)
+         getR=0;
+    else
+          getR=r;
+          // if(root itself is null means this is also a leaf node as here leaf node definition 
+          
+          // is which is connected torugh only 1 node)
+    // Example here 1 will be also a leaf node 
+          //       1
+       //            2
+    //              3  5
+    if(parent==null||(l!=Integer.MIN_VALUE&&r!=Integer.MIN_VALUE))
+    {
+      if(ans[0]< getL+getR+root.data)
+      ans[0]=getL+getR+root.data;
+       
+    }
+    if(l==Integer.MIN_VALUE&&r==Integer.MIN_VALUE)
+        return root.data;
+    else
+   return root.data+Math.max(l,r);      
+  }
+}
+
+class Res {
+    int val;
+}
+
+class BinaryTree {
+
+    static Node root;
+      Node setTree(Node root){
+      
+      Node temp = new Node(0);
+      //if tree is left most
+      if(root.right==null){
+          root.right=temp;
+      }
+      else{    //if tree is right most
+          root.left=temp;
+      }
+      
+      return root;
+    }
+
+    // A utility function to find the maximum sum between any
+    // two leaves.This function calculates two values:
+    // 1) Maximum path sum between two leaves which is stored
+    //    in res.
+    // 2) The maximum root to leaf path sum which is returned.
+    // If one side of root is empty, then it returns INT_MIN
+    int maxPathSumUtil(Node node, Res res) {
+
+        // Base cases
+        if (node == null)
+            return 0;
+        if (node.left == null && node.right == null)
+            return node.data;
+
+        // Find maximum sum in left and right subtree. Also
+        // find maximum root to leaf sums in left and right
+        // subtrees and store them in ls and rs
+        int ls = maxPathSumUtil(node.left, res);
+        int rs = maxPathSumUtil(node.right, res);
+
+        // If both left and right children exist
+        if (node.left != null && node.right != null) {
+
+            // Update result if needed
+            res.val = Math.max(res.val, ls + rs + node.data);
+
+            // Return maximum possible value for root being
+            // on one side
+            return Math.max(ls, rs) + node.data;
+        }
+
+        // If any of the two children is empty, return
+        // root sum for root being on one side
+        return (node.left == null) ? rs + node.data
+                : ls + node.data;
+    }
+
+    // The main function which returns sum of the maximum
+    // sum path between two leaves. This function mainly
+    // uses maxPathSumUtil()
+    int maxPathSum(Node node)
+    {
+        Res res = new Res();
+        res.val = Integer.MIN_VALUE;
+      
+          if(root.left==null || root.right==null){
+            root=setTree(root);
+        }
+          //if tree is left most or right most
+          //call setTree() method to adjust tree first
+        maxPathSumUtil(root, res);
+        return res.val;
+    }
+
+
+Q  Same value Tree Count 
+
+
+
+ bool countSubtreesRec(Node* root, int &count)
+    {
+        // Return false to indicate NULL
+        if (root == NULL)
+           return true;
+     
+        // Recursively count in left and right subtrees also
+        bool left = countSubtreesRec(root->left, count);
+        bool right = countSubtreesRec(root->right, count);
+     
+        // If any of the subtrees is not singly, then this
+        // cannot be singly.
+        if (left == false || right == false)
+           return false;
+     
+        // If left subtree is singly and non-empty, but data
+        // doesn't match
+        if (root->left && root->data != root->left->data)
+            return false;
+     
+        // Same for right subtree
+        if (root->right && root->data != root->right->data)
+            return false;
+     
+        // If none of the above conditions is true, then
+        // tree rooted under root is single valued, increment
+        // count and return true.
+        count++;
+        return true;
+    }
+ 
+ 
+    
+Mine approach
+public static int countSubtrees(Node root)
+    {
+        //code here
+        boolean temp=solve(root,root);
+        int l=res;
+        res=0;
+        return l;
+    }
+    static boolean solve(Node root,Node prev)
+    {
+        if(root ==null)
+          return true;
+        
+       boolean left=solve(root.left,root);
+       boolean right=solve(root.right,root);
+       if(left==true&&right==true)
+       {
+         res++;  
+       }
+         
+       if(left==false || right == false)
+          return false;
+       if(root.data!=prev.data)
+         return false;
+       
+      return true;
+    }
+    
+    
+Q Cousins of a given node 
+
+Mine approach -
+Find the parent of given node and level
+then add all node of that level except that
+
+static int level_s;
+    public static ArrayList<Integer> printCousins(Node root, Node node_to_find)
+    {
+        //code here
+        ArrayList<Integer> res= new ArrayList<>();
+       
+        Node parent=findParent(root,null,node_to_find,0);
+         if(parent ==null)
+        {
+            res.add(-1);
+            return res;
+        }
+        // System.out.println(parent.data);
+        // System.out.println(level_s);
+        Queue<Node> q= new LinkedList<>();
+        int level=0;
+        q.add(root);
+        while(q.isEmpty()==false)
+        {
+            int size=q.size();
+            for(int i=1;i<=size;i++)
+            {
+                Node temp=q.poll();
+                if(level==level_s)
+                {
+                  if(parent.right!=temp &&parent.left!=temp)
+                    res.add(temp.data);
+                }
+             if(temp.left!=null)
+               q.add(temp.left);
+             if(temp.right!=null)
+               q.add(temp.right);
+            }
+            if(level==level_s)
+              break;
+            level++;
+        }
+        if(res.size()==0)
+          res.add(-1);
+        return res;
+    }
+    static Node findParent(Node root,Node parent,Node node_to_find,int level)
+    {
+         if(root == null)
+         return root;
+      
+      if(root==node_to_find)
+      {
+          level_s=level;
+         return parent;
+      }
+      Node left=findParent(root.left,root,node_to_find,level+1);
+      if(left==null)
+      return findParent(root.right,root,node_to_find,level+1);
+      return left;
+      
+    }
+    
+Another appraoch using level order traversal
+
+/Back-end complete function Template for C++
+
+class Solution
+{
+    public:
+    vector<int> printCousins(Node* root, Node* node_to_find)
+    {
+    
+    	vector<int> ans;
+    	// if the given node is the root itself,
+    	// then no nodes would be printed
+    	if (root == node_to_find) {
+    
+    		ans.push_back(-1);
+    		return ans;
+    	}
+    
+    	queue<Node*> q;
+    	bool found = false;
+    	int size_;
+    	Node* p;
+    	q.push(root);
+    
+    
+    	// the following loop runs until found is
+    	// not true, or q is not empty.
+    	// if found has become true => we have found
+    	// the level in which the node is present
+    	// and the present queue will contain all the
+    	// cousins of that node
+    	while (!q.empty() && !found) {
+    
+    		size_ = q.size();
+    		while (size_) {
+    			p = q.front();
+    			q.pop();
+    
+    			// if current node's left or right child
+    			// is the same as the node to find,
+    			// then make found = true, and don't push
+    			// any of them into the queue, as
+    			// we don't have to print the siblings
+    			if ((p->left == node_to_find ||
+    			        p->right == node_to_find)) {
+    				found = true;
+    			}
+    			else {
+    				if (p->left)
+    					q.push(p->left);
+    				if (p->right)
+    					q.push(p->right);
+    			}
+    
+    			size_--;
+    		}
+    	}
+    
+    	// if found == true then the queue will contain the
+    	// cousins of the given node
+    	if (found)
+    	{
+    		size_ = q.size();
+    
+    		// size_ will be 0 when the node was at the
+    		// level just below the root node.
+    		if (size_ == 0)
+    			ans.push_back(-1);
+    		for (int i = 0; i < size_; i++) {
+    			p = q.front();
+    			q.pop();
+    			ans.push_back(p->data);
+    		}
+    	}
+    
+    	else
+    		ans.push_back(-1);
+    
+    
+    	return ans;
+    }
+    
+};
+
+
+Q  7. Maximum path sum from any node
+
+class Solution
+{
+    //Function to return maximum path sum from any node in a tree.
+    
+    // 1. Traverse the tree in post order way
+    // for each node we have 44 scenrios
+    //a.  take curr as start node and left subtree as end node 
+    
+    // b. take curr as start node and right subtree as end node
+    
+    // c, take left subtree as start node and right subtree as endnode
+    
+    //d take this node itself as start and end node
+    
+    // return max(a,b,curr.dat) to the parent node
+    static int res=Integer.MIN_VALUE;
+    int findMaxSum(Node node)
+    {
+        //your code goes here
+         int l=solve(node);
+        
+        int temp=res;
+        res=Integer.MIN_VALUE;
+        return temp;
+    }
+    static int solve(Node root)
+    {
+      if(root== null)
+        return 0;
+     int left=root.data+ solve(root.left);
+     int right=root.data+solve(root.right);
+     int max=Math.max(root.data,Math.max(left,right));
+    int temp= Math.max((left+right-root.data),max);
+    if(res<temp)
+    res=temp;
+    return Math.max(Math.max(left,right),root.data);
+    }
+}
+
+Home Work
+1. Why the height of the tree is log(n)
+2. Iterative way to do inorder traversal and preorder traversal of binary tree
+3. How to uniquely identify a tree
+4. Serialization and desearilazion of tree
+
